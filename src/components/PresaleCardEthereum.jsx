@@ -226,402 +226,412 @@ export default function PresaleCardEthereum({ lang = "en" }) {
       >
         {purchaseLoader && <Loader isPresale />}
         <>
-          <h1 className="text-xl font-extrabold uppercase">
-            {lang === "en"
-              ? "Buy"
-              : lang === "ru"
-                ? "Купить"
-                : lang === "fr"
-                  ? "Acheter"
-                  : "Comprar"}{" "}
-            LNBG Coin
-          </h1>
-          <div className="flex w-full flex-col gap-3 rounded-xl bg-coal px-4 py-5">
-            <span className="text-sm font-bold text-gray2">
-              USD{" "}
+          <div className="absolute top-0 z-20 flex h-full w-full items-center justify-center bg-black/50">
+            <h1 className="text-xl font-bold">Presale round has ended</h1>
+          </div>
+          <div className="flex w-full flex-col items-center gap-6 blur-sm">
+            <h1 className="text-xl font-extrabold uppercase">
               {lang === "en"
-                ? "raised"
+                ? "Buy"
                 : lang === "ru"
-                  ? "поднято"
+                  ? "Купить"
                   : lang === "fr"
-                    ? "levé"
-                    : "recaudado"}
-            </span>
-            <div className="flex flex-wrap items-end gap-1 font-bold">
+                    ? "Acheter"
+                    : "Comprar"}{" "}
+              LNBG Coin
+            </h1>
+            <div className="flex w-full flex-col gap-3 rounded-xl bg-coal px-4 py-5">
+              <span className="text-sm font-bold text-gray2">
+                USD{" "}
+                {lang === "en"
+                  ? "raised"
+                  : lang === "ru"
+                    ? "поднято"
+                    : lang === "fr"
+                      ? "levé"
+                      : "recaudado"}
+              </span>
+              <div className="flex flex-wrap items-end gap-1 font-bold">
+                {loader ? (
+                  <Skeleton className="h-6 w-[250px] max-w-full" />
+                ) : (
+                  <>
+                    <span className="text-xl text-primary sm:text-3xl">
+                      ${roundOff(contractData?.raisedAmount)}
+                    </span>
+                    <span className="font-normal text-gray2 sm:pb-1 sm:text-lg">
+                      / $10,000,000
+                    </span>
+                  </>
+                )}
+              </div>
               {loader ? (
-                <Skeleton className="h-6 w-[250px] max-w-full" />
+                <Skeleton className="h-2 w-[150px]" />
               ) : (
-                <>
-                  <span className="text-xl text-primary sm:text-3xl">
-                    ${roundOff(contractData?.raisedAmount)}
+                <div className="text-xs text-gray2/60">
+                  {+contractData?.tokensInContract > 0
+                    ? Number(remainTokens)?.toFixed(2)
+                    : 0}{" "}
+                  {lang === "en"
+                    ? "of"
+                    : lang === "ru"
+                      ? "из"
+                      : lang === "fr"
+                        ? "de"
+                        : "de"}{" "}
+                  10,000,000{" "}
+                  {lang === "en"
+                    ? "tokens"
+                    : lang === "ru"
+                      ? "токенов"
+                      : lang === "fr"
+                        ? "jetons"
+                        : "tokens"}
+                </div>
+              )}
+              {loader ? (
+                <Skeleton className="h-16 w-full" />
+              ) : (
+                <ProgressBar
+                  contractData={contractData}
+                  lang={lang}
+                  soldPercentage={soldPercentage}
+                />
+              )}
+              {loader ? (
+                <Skeleton className="h-10 w-full" />
+              ) : (
+                <div className="rounded-xd flex items-center gap-5 bg-ash px-2 py-3 text-gray2">
+                  <span className="w-full text-xs">
+                    {lnbgAddress?.address?.slice(0, 6)}........
+                    {lnbgAddress?.address?.slice(-4)}
                   </span>
-                  <span className="font-normal text-gray2 sm:pb-1 sm:text-lg">
-                    / $10,000,000
-                  </span>
-                </>
+                  {/* {copySuccess ? (
+              <span className="text-nowrap text-[8px]">Copied to clipboard</span>
+            ) : ( */}
+                  <button onClick={() => copyToClipboard()}>
+                    <Copy size={18} />
+                  </button>
+                  {/* )} */}
+                </div>
               )}
             </div>
             {loader ? (
-              <Skeleton className="h-2 w-[150px]" />
+              <Skeleton className="h-14 w-[250px]" />
             ) : (
-              <div className="text-xs text-gray2/60">
-                {+contractData?.tokensInContract > 0
-                  ? Number(remainTokens)?.toFixed(2)
-                  : 0}{" "}
-                {lang === "en"
-                  ? "of"
-                  : lang === "ru"
-                    ? "из"
-                    : lang === "fr"
-                      ? "de"
-                      : "de"}{" "}
-                10,000,000{" "}
-                {lang === "en"
-                  ? "tokens"
-                  : lang === "ru"
-                    ? "токенов"
-                    : lang === "fr"
-                      ? "jetons"
-                      : "tokens"}
-              </div>
+              isClient &&
+              (isConnected ? (
+                <div className="grid w-full gap-5 sm:grid-cols-2">
+                  <div className="flex flex-col gap-2">
+                    <span className="text-sm text-gray2">
+                      Your LNBG tokens:
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <Image
+                        src="/static/logo.png"
+                        width={18}
+                        height={18}
+                        alt="lnbg"
+                      />
+                      <span className="break-all text-2xl">
+                        {Number(contractData?.lnbgBalance)?.toFixed(2)}
+                      </span>
+                    </div>
+                    <span className="text-sm text-gray2">
+                      = ${" "}
+                      {formatNumber(
+                        Number(
+                          contractData?.lnbgBalance *
+                            ethers.utils.formatUnits(
+                              contractData?.tokenPrice,
+                              6,
+                            ),
+                        )?.toFixed(2),
+                      )}
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <span className="text-sm text-gray2">Your Points:</span>
+                    <span className="text-xl text-white/40">
+                      {Number(+userDatabaseData?.tokens_earned)?.toFixed(1)}
+                    </span>
+                    <button
+                      onClick={() => {
+                        copyToClipboardReferral();
+                        setCopyReferralText("Copied!");
+
+                        setTimeout(() => {
+                          setCopyReferralText("Copy referral link");
+                        }, 5000);
+                      }}
+                      className="flex items-center gap-3"
+                    >
+                      <span
+                        className={cn(
+                          copyReferralText == "Copied!"
+                            ? "text-primary"
+                            : "text-white",
+                        )}
+                      >
+                        {copyReferralText}
+                      </span>
+                      {copyReferralText === "Copy referral link" && (
+                        <CopyIcon size={18} />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <CountdownTimer lang={lang} />
+              ))
             )}
             {loader ? (
               <Skeleton className="h-16 w-full" />
             ) : (
-              <ProgressBar
-                contractData={contractData}
-                lang={lang}
-                soldPercentage={soldPercentage}
+              <SelectTokenModal
+                chainId={chainId}
+                setLnbgValue={setLnbgValue}
+                setTokensAmount={setTokensAmount}
+                selectedToken={selectedToken}
+                setSelectedToken={setSelectedToken}
               />
             )}
             {loader ? (
-              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-32 w-full" />
             ) : (
-              <div className="rounded-xd flex items-center gap-5 bg-ash px-2 py-3 text-gray2">
-                <span className="w-full text-xs">
-                  {lnbgAddress?.address?.slice(0, 6)}........
-                  {lnbgAddress?.address?.slice(-4)}
-                </span>
-                {/* {copySuccess ? (
-              <span className="text-nowrap text-[8px]">Copied to clipboard</span>
-            ) : ( */}
-                <button onClick={() => copyToClipboard()}>
-                  <Copy size={18} />
-                </button>
-                {/* )} */}
-              </div>
-            )}
-          </div>
-          {loader ? (
-            <Skeleton className="h-14 w-[250px]" />
-          ) : (
-            isClient &&
-            (isConnected ? (
-              <div className="grid w-full gap-5 sm:grid-cols-2">
-                <div className="flex flex-col gap-2">
-                  <span className="text-sm text-gray2">Your LNBG tokens:</span>
-                  <div className="flex items-center gap-2">
-                    <Image
-                      src="/static/logo.png"
-                      width={18}
-                      height={18}
-                      alt="lnbg"
-                    />
-                    <span className="break-all text-2xl">
-                      {Number(contractData?.lnbgBalance)?.toFixed(2)}
-                    </span>
-                  </div>
-                  <span className="text-sm text-gray2">
-                    = ${" "}
-                    {formatNumber(
-                      Number(
-                        contractData?.lnbgBalance *
-                          ethers.utils.formatUnits(contractData?.tokenPrice, 6),
-                      )?.toFixed(2),
-                    )}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <span className="text-sm text-gray2">Your Points:</span>
-                  <span className="text-xl text-white/40">
-                    {Number(+userDatabaseData?.tokens_earned)?.toFixed(1)}
-                  </span>
-                  <button
-                    onClick={() => {
-                      copyToClipboardReferral();
-                      setCopyReferralText("Copied!");
-
-                      setTimeout(() => {
-                        setCopyReferralText("Copy referral link");
-                      }, 5000);
-                    }}
-                    className="flex items-center gap-3"
-                  >
-                    <span
-                      className={cn(
-                        copyReferralText == "Copied!"
-                          ? "text-primary"
-                          : "text-white",
+              <div className="flex w-full flex-col gap-3">
+                <div className="grid w-full gap-y-5 px-1 text-sm text-gray2 sm:grid-cols-2">
+                  <div className="col-span-2 flex flex-col gap-3 sm:col-span-1">
+                    <div className="flex items-center gap-2">
+                      <span>
+                        {lang === "en"
+                          ? "You pay:"
+                          : lang === "ru"
+                            ? "Вы платите:"
+                            : lang === "fr"
+                              ? "Tu paies:"
+                              : "Usted paga:"}
+                      </span>
+                      <span className="font-sans">
+                        {/* Tell the customer how much he pays in USD */}(
+                        {formatCurrency(Number(ethValue)?.toFixed(2))})
+                      </span>
+                    </div>
+                    <div className="flex h-[56px] w-full items-center gap-2 rounded-xl border border-gray2/40 px-3 py-3 text-lg sm:rounded-l-xl sm:rounded-r-none">
+                      {selectedToken == "Ethereum" ? (
+                        ethSvg
+                      ) : selectedToken == "USDC" ? (
+                        usdcSvg
+                      ) : selectedToken == "USDT" ? (
+                        usdtSvg
+                      ) : (
+                        <Image
+                          src="/static/bnb-logo.png"
+                          width={21}
+                          height={21}
+                          alt="bnb"
+                        />
                       )}
-                    >
-                      {copyReferralText}
-                    </span>
-                    {copyReferralText === "Copy referral link" && (
-                      <CopyIcon size={18} />
-                    )}
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <CountdownTimer lang={lang} />
-            ))
-          )}
-          {loader ? (
-            <Skeleton className="h-16 w-full" />
-          ) : (
-            <SelectTokenModal
-              chainId={chainId}
-              setLnbgValue={setLnbgValue}
-              setTokensAmount={setTokensAmount}
-              selectedToken={selectedToken}
-              setSelectedToken={setSelectedToken}
-            />
-          )}
-          {loader ? (
-            <Skeleton className="h-32 w-full" />
-          ) : (
-            <div className="flex w-full flex-col gap-3">
-              <div className="grid w-full gap-y-5 px-1 text-sm text-gray2 sm:grid-cols-2">
-                <div className="col-span-2 flex flex-col gap-3 sm:col-span-1">
-                  <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        placeholder="0.0"
+                        // inputMode="numeric"
+                        value={tokenAmount}
+                        onChange={handleTokenChange}
+                        className="w-full text-ellipsis bg-transparent text-gray2"
+                      />
+                    </div>
+                  </div>
+                  <div className="col-span-2 flex flex-col gap-3 sm:col-span-1">
                     <span>
                       {lang === "en"
-                        ? "You pay:"
+                        ? "You receive:"
                         : lang === "ru"
-                          ? "Вы платите:"
+                          ? "Вы получаете:"
                           : lang === "fr"
-                            ? "Tu paies:"
-                            : "Usted paga:"}
+                            ? "Tu reçois:"
+                            : "Usted recibe:"}
                     </span>
-                    <span className="font-sans">
-                      {/* Tell the customer how much he pays in USD */}(
-                      {formatCurrency(Number(ethValue)?.toFixed(2))})
-                    </span>
-                  </div>
-                  <div className="flex h-[56px] w-full items-center gap-2 rounded-xl border border-gray2/40 px-3 py-3 text-lg sm:rounded-l-xl sm:rounded-r-none">
-                    {selectedToken == "Ethereum" ? (
-                      ethSvg
-                    ) : selectedToken == "USDC" ? (
-                      usdcSvg
-                    ) : selectedToken == "USDT" ? (
-                      usdtSvg
-                    ) : (
+                    <div className="flex h-[56px] w-full items-center gap-2 rounded-xl border border-gray2/40 px-3 py-3 text-lg sm:rounded-l-none sm:rounded-r-xl">
                       <Image
-                        src="/static/bnb-logo.png"
+                        src="/static/coins/lnbgcoin.png"
                         width={21}
                         height={21}
-                        alt="bnb"
+                        alt="lnbgcoin"
                       />
-                    )}
-                    <input
-                      type="text"
-                      placeholder="0.0"
-                      // inputMode="numeric"
-                      value={tokenAmount}
-                      onChange={handleTokenChange}
-                      className="w-full text-ellipsis bg-transparent text-gray2"
-                    />
-                  </div>
-                </div>
-                <div className="col-span-2 flex flex-col gap-3 sm:col-span-1">
-                  <span>
-                    {lang === "en"
-                      ? "You receive:"
-                      : lang === "ru"
-                        ? "Вы получаете:"
-                        : lang === "fr"
-                          ? "Tu reçois:"
-                          : "Usted recibe:"}
-                  </span>
-                  <div className="flex h-[56px] w-full items-center gap-2 rounded-xl border border-gray2/40 px-3 py-3 text-lg sm:rounded-l-none sm:rounded-r-xl">
-                    <Image
-                      src="/static/coins/lnbgcoin.png"
-                      width={21}
-                      height={21}
-                      alt="lnbgcoin"
-                    />
-                    <input
-                      type="text"
-                      // inputMode="numeric"
-                      value={Number(
-                        ethers.utils.formatEther(lnbgValue?.toString()),
-                      )?.toFixed(2)}
-                      // onChange={handleTokenChange}
-                      className="w-full text-ellipsis bg-transparent text-gray2"
-                    />
-                  </div>
-                </div>
-                {isClient && isConnected && (
-                  <div className="col-span-2 flex w-full flex-wrap items-center gap-3 text-gray2">
-                    <span className="text-sm">Balance:</span>
-                    <div className="w-fit text-nowrap rounded-full border border-gray2 px-3 font-sans text-xs italic">
-                      {Number(
-                        selectedToken == "Binance"
-                          ? contractData?.ethBalance
-                          : selectedToken == "USDT"
-                            ? contractData?.usdtBalance
-                            : contractData?.usdcBalance,
-                      ).toFixed(4)}{" "}
-                      available
+                      <input
+                        type="text"
+                        // inputMode="numeric"
+                        value={Number(
+                          ethers.utils.formatEther(lnbgValue?.toString()),
+                        )?.toFixed(2)}
+                        // onChange={handleTokenChange}
+                        className="w-full text-ellipsis bg-transparent text-gray2"
+                      />
                     </div>
+                  </div>
+                  {isClient && isConnected && (
+                    <div className="col-span-2 flex w-full flex-wrap items-center gap-3 text-gray2">
+                      <span className="text-sm">Balance:</span>
+                      <div className="w-fit text-nowrap rounded-full border border-gray2 px-3 font-sans text-xs italic">
+                        {Number(
+                          selectedToken == "Binance"
+                            ? contractData?.ethBalance
+                            : selectedToken == "USDT"
+                              ? contractData?.usdtBalance
+                              : contractData?.usdcBalance,
+                        ).toFixed(4)}{" "}
+                        available
+                      </div>
+                      <button
+                        onClick={() => handleUseMaxBalance()}
+                        className="flex h-[18px] w-fit  items-center justify-center text-nowrap rounded-full bg-red-500 px-1.5 pb-0.5 font-sans text-[12px] text-white"
+                      >
+                        use max
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <div className="grid w-full px-1 sm:grid-cols-2">
+                  <span className="text-sm font-semibold">
+                    1 lnbg ={" "}
+                    {ethers.utils.formatUnits(contractData?.tokenPrice, 6)}$
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold">
+                      {lang === "en"
+                        ? "Next price = 0.0663$"
+                        : lang === "ru"
+                          ? "Следующая цена = 0.0663$"
+                          : lang === "fr"
+                            ? "Prochain prix = 0.0663$"
+                            : "Próximo precio = 0.0663$"}
+                    </span>
+                    <div className="rounded-md bg-red-500 px-1 py-0.5 text-xs">
+                      +30%
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            {isClient &&
+              (isConnected == true ? (
+                selectedToken == "Ethereum" ? (
+                  <div className="flex w-full flex-col gap-5">
                     <button
-                      onClick={() => handleUseMaxBalance()}
-                      className="flex h-[18px] w-fit  items-center justify-center text-nowrap rounded-full bg-red-500 px-1.5 pb-0.5 font-sans text-[12px] text-white"
+                      className="mt-10 w-full rounded-xl bg-primary py-3 font-bold text-black"
+                      disabled={loader || buttonText === "Insufficient Balance"}
+                      onClick={() => {
+                        buttonText === "Insufficient Balance"
+                          ? ""
+                          : BuyWithETHOnEthereum(
+                              lnbgValue?.toString(),
+                              tokenAmount,
+                            );
+                      }}
                     >
-                      use max
+                      {buttonText}
+                    </button>
+                    <button
+                      onClick={addTokenToMetamask}
+                      className="w-full rounded-xl border border-black bg-black py-3 font-bold hover:border-primary"
+                      disabled={loader}
+                    >
+                      {lang === "en"
+                        ? "Add token in metamask"
+                        : lang === "ru"
+                          ? "Добавить токен в metamask"
+                          : lang === "fr"
+                            ? "Ajouter un jeton dans metamask"
+                            : "Agregar token en metamask"}
                     </button>
                   </div>
-                )}
-              </div>
-              <div className="grid w-full px-1 sm:grid-cols-2">
-                <span className="text-sm font-semibold">
-                  1 lnbg ={" "}
-                  {ethers.utils.formatUnits(contractData?.tokenPrice, 6)}$
-                </span>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold">
-                    {lang === "en"
-                      ? "Next price = 0.0663$"
-                      : lang === "ru"
-                        ? "Следующая цена = 0.0663$"
-                        : lang === "fr"
-                          ? "Prochain prix = 0.0663$"
-                          : "Próximo precio = 0.0663$"}
-                  </span>
-                  <div className="rounded-md bg-red-500 px-1 py-0.5 text-xs">
-                    +30%
+                ) : selectedToken == "USDC" ? (
+                  <div className="flex w-full flex-col gap-5">
+                    <button
+                      className="mt-10 w-full rounded-xl bg-primary py-3 font-bold text-black"
+                      disabled={loader || buttonText === "Insufficient Balance"}
+                      onClick={() => {
+                        BuyWithUSDTandUSDCOnEthereum(
+                          tokenAmount,
+                          lnbgValue?.toString(),
+                          false,
+                        );
+                      }}
+                    >
+                      {buttonText}
+                    </button>
+                    <button
+                      onClick={addTokenToMetamask}
+                      className="w-full rounded-xl border border-black bg-black py-3 font-bold hover:border-primary"
+                      disabled={loader}
+                    >
+                      {lang === "en"
+                        ? "Add token in metamask"
+                        : lang === "ru"
+                          ? "Добавить токен в metamask"
+                          : lang === "fr"
+                            ? "Ajouter un jeton dans metamask"
+                            : "Agregar token en metamask"}
+                    </button>
                   </div>
-                </div>
-              </div>
-            </div>
-          )}
-          {isClient &&
-            (isConnected == true ? (
-              selectedToken == "Ethereum" ? (
-                <div className="flex w-full flex-col gap-5">
-                  <button
-                    className="mt-10 w-full rounded-xl bg-primary py-3 font-bold text-black"
-                    disabled={loader || buttonText === "Insufficient Balance"}
-                    onClick={() => {
-                      buttonText === "Insufficient Balance"
-                        ? ""
-                        : BuyWithETHOnEthereum(
-                            lnbgValue?.toString(),
-                            tokenAmount,
-                          );
-                    }}
-                  >
-                    {buttonText}
-                  </button>
-                  <button
-                    onClick={addTokenToMetamask}
-                    className="w-full rounded-xl border border-black bg-black py-3 font-bold hover:border-primary"
-                    disabled={loader}
-                  >
-                    {lang === "en"
-                      ? "Add token in metamask"
-                      : lang === "ru"
-                        ? "Добавить токен в metamask"
-                        : lang === "fr"
-                          ? "Ajouter un jeton dans metamask"
-                          : "Agregar token en metamask"}
-                  </button>
-                </div>
-              ) : selectedToken == "USDC" ? (
-                <div className="flex w-full flex-col gap-5">
-                  <button
-                    className="mt-10 w-full rounded-xl bg-primary py-3 font-bold text-black"
-                    disabled={loader || buttonText === "Insufficient Balance"}
-                    onClick={() => {
-                      BuyWithUSDTandUSDCOnEthereum(
-                        tokenAmount,
-                        lnbgValue?.toString(),
-                        false,
-                      );
-                    }}
-                  >
-                    {buttonText}
-                  </button>
-                  <button
-                    onClick={addTokenToMetamask}
-                    className="w-full rounded-xl border border-black bg-black py-3 font-bold hover:border-primary"
-                    disabled={loader}
-                  >
-                    {lang === "en"
-                      ? "Add token in metamask"
-                      : lang === "ru"
-                        ? "Добавить токен в metamask"
-                        : lang === "fr"
-                          ? "Ajouter un jeton dans metamask"
-                          : "Agregar token en metamask"}
-                  </button>
-                </div>
+                ) : (
+                  <div className="flex w-full flex-col gap-5">
+                    <button
+                      className="mt-10 w-full rounded-xl bg-primary py-3 font-bold text-black"
+                      disabled={loader || buttonText === "Insufficient Balance"}
+                      onClick={() => {
+                        BuyWithUSDTandUSDCOnEthereum(
+                          tokenAmount,
+                          lnbgValue?.toString(),
+                          true,
+                        );
+                      }}
+                    >
+                      {buttonText}
+                    </button>
+                    <button
+                      onClick={addTokenToMetamask}
+                      className="w-full rounded-xl border border-black bg-black py-3 font-bold hover:border-primary"
+                      disabled={loader}
+                    >
+                      {lang === "en"
+                        ? "Add token in metamask"
+                        : lang === "ru"
+                          ? "Добавить токен в metamask"
+                          : lang === "fr"
+                            ? "Ajouter un jeton dans metamask"
+                            : "Agregar token en metamask"}
+                    </button>
+                  </div>
+                )
               ) : (
-                <div className="flex w-full flex-col gap-5">
-                  <button
-                    className="mt-10 w-full rounded-xl bg-primary py-3 font-bold text-black"
-                    disabled={loader || buttonText === "Insufficient Balance"}
-                    onClick={() => {
-                      BuyWithUSDTandUSDCOnEthereum(
-                        tokenAmount,
-                        lnbgValue?.toString(),
-                        true,
-                      );
-                    }}
-                  >
-                    {buttonText}
-                  </button>
-                  <button
-                    onClick={addTokenToMetamask}
-                    className="w-full rounded-xl border border-black bg-black py-3 font-bold hover:border-primary"
-                    disabled={loader}
-                  >
-                    {lang === "en"
-                      ? "Add token in metamask"
-                      : lang === "ru"
-                        ? "Добавить токен в metamask"
-                        : lang === "fr"
-                          ? "Ajouter un jeton dans metamask"
-                          : "Agregar token en metamask"}
-                  </button>
-                </div>
-              )
-            ) : (
-              <button
-                className="mt-10 w-full rounded-xl bg-primary py-3 font-bold text-black"
-                onClick={() => open()}
-              >
-                {lang === "en"
-                  ? "Connect wallet"
-                  : lang === "ru"
-                    ? "Подключить кошелек"
-                    : lang === "fr"
-                      ? "Connecter le portefeuille"
-                      : "Conectar billetera"}
-              </button>
-            ))}
-          <Link
-            href="https://lnbg-london.gitbook.io/lnbg-london/information/how-to-buy"
-            className="text-sm text-gray2/60"
-          >
-            {lang === "en"
-              ? "How to buy?"
-              : lang === "ru"
-                ? "Как купить?"
-                : lang === "fr"
-                  ? "Comment acheter?"
-                  : "¿Cómo comprar?"}
-          </Link>
+                <button
+                  className="mt-10 w-full rounded-xl bg-primary py-3 font-bold text-black"
+                  onClick={() => open()}
+                >
+                  {lang === "en"
+                    ? "Connect wallet"
+                    : lang === "ru"
+                      ? "Подключить кошелек"
+                      : lang === "fr"
+                        ? "Connecter le portefeuille"
+                        : "Conectar billetera"}
+                </button>
+              ))}
+            <Link
+              href="https://lnbg-london.gitbook.io/lnbg-london/information/how-to-buy"
+              className="text-sm text-gray2/60"
+            >
+              {lang === "en"
+                ? "How to buy?"
+                : lang === "ru"
+                  ? "Как купить?"
+                  : lang === "fr"
+                    ? "Comment acheter?"
+                    : "¿Cómo comprar?"}
+            </Link>
+          </div>
         </>
       </motion.div>
     </>
